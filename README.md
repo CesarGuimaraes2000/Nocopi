@@ -44,7 +44,7 @@ Para executar a interface interativa e testar os modelos, siga os passos abaixo.
 1.  **Clone o repositório:**
 
     ```bash
-    git clone [URL_DO_SEU_REPOSITORIO]
+    git clone https://github.com/CesarGuimaraes2000/Nocopi
     cd [NOME_DA_PASTA_DO_PROJETO]
     ```
 
