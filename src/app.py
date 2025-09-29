@@ -1,33 +1,10 @@
 import streamlit as st
 import joblib
 import os
-import re
-import nltk
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from pathlib import Path
+from utils import verificar_e_baixar_nltk, calcular_similaridade_tfidf, preprocessar_texto
 
-# --- Funções Auxiliares e de Processamento ---
-# (Reunimos as funções essenciais dos outros scripts aqui)
-
-def preprocessar_texto(texto):
-    """Limpa e prepara o texto para análise."""
-    stopwords = nltk.corpus.stopwords.words('english')
-    texto = texto.lower()
-    texto = re.sub(r'[^a-zA-Z\s]', repl='', string=texto, flags=re.I|re.A)
-    tokens = nltk.word_tokenize(texto)
-    tokens_filtrados = [palavra for palavra in tokens if palavra not in stopwords]
-    return " ".join(tokens_filtrados)
-
-def calcular_similaridade_tfidf(texto1, texto2):
-    """Calcula a similaridade de cosseno TF-IDF entre dois textos."""
-    vectorizer = TfidfVectorizer()
-    textos_processados = [preprocessar_texto(texto1), preprocessar_texto(texto2)]
-    if not textos_processados[0] or not textos_processados[1]:
-        return 0.0
-    matriz_tfidf = vectorizer.fit_transform(textos_processados)
-    return cosine_similarity(matriz_tfidf[0:1], matriz_tfidf[1:2])[0][0]
 
 # --- Funções de Carregamento com Cache ---
 # O @st.cache_data garante que a base de dados seja carregada apenas uma vez,
@@ -71,6 +48,8 @@ DATASET_PATH = PROJECT_ROOT / 'Datasets/Plagio'
 CSV_PATH = DATASET_PATH / 'file_information.csv'
 FILES_PATH = DATASET_PATH / 'data'
 MODEL_PATH = PROJECT_ROOT / 'models' / 'plagiarism_classifier.joblib'
+
+verificar_e_baixar_nltk()
 
 # Carrega os dados e o modelo usando as funções com cache
 base_dados_originais = carregar_base_originais(CSV_PATH, FILES_PATH)

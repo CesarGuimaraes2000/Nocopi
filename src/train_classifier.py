@@ -5,8 +5,10 @@ from sklearn.metrics import accuracy_score
 import joblib
 from pathlib import Path
 import os # Adicionado para criar a pasta do modelo
+from utils import verificar_e_baixar_nltk
 
 if __name__ == "__main__":
+    verificar_e_baixar_nltk()
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
     # --- ALTERAÇÃO 1: APONTAR PARA O NOVO CAMINHO DO CSV ---
