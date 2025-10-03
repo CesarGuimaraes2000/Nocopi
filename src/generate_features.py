@@ -1,16 +1,12 @@
 import os
 import pandas as pd
 import numpy as np
-import re
-import nltk
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from pathlib import Path
 from utils import verificar_e_baixar_nltk, calcular_similaridade_tfidf, preprocessar_texto
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
-    DATASET_PATH = PROJECT_ROOT / 'Datasets/Plagio' # Corrigido para seu caminho
+    DATASET_PATH = PROJECT_ROOT / 'Datasets/Plagio'
     CSV_PATH = DATASET_PATH / 'file_information.csv'
     FILES_PATH = DATASET_PATH / 'data'
     verificar_e_baixar_nltk()

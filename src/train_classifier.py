@@ -4,7 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 import joblib
 from pathlib import Path
-import os # Adicionado para criar a pasta do modelo
+import os 
 from utils import verificar_e_baixar_nltk
 
 if __name__ == "__main__":

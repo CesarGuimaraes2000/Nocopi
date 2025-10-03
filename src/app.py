@@ -3,13 +3,16 @@ import joblib
 import os
 import pandas as pd
 from pathlib import Path
-from utils import verificar_e_baixar_nltk, calcular_similaridade_tfidf, preprocessar_texto
 
+# Importando nossas novas funções de análise e as utilidades
+from utils import verificar_e_baixar_nltk
+from SAMV1 import analisar_com_tfidf
+from SAMV2 import analisar_com_ml
 
-# --- Funções de Carregamento com Cache ---
-# O @st.cache_data garante que a base de dados seja carregada apenas uma vez,
-# tornando o app muito mais rápido após a primeira execução.
+# Chama a função de verificação no início da execução do app
+verificar_e_baixar_nltk()
 
+# --- Funções de Carregamento com Cache (continuam aqui) ---
 @st.cache_data
 def carregar_base_originais(csv_path, files_path):
     """Carrega todos os textos originais da base de dados e os armazena em cache."""
@@ -36,9 +39,8 @@ def carregar_modelo_ml(model_path):
         st.error(f"ERRO: Modelo '{model_path}' não encontrado. Execute o script '2_train_classifier.py' primeiro.")
         return None
 
-# --- Interface Gráfica do Streamlit ---
+# --- Interface Gráfica do Streamlit (agora muito mais limpa) ---
 
-# Título da Aplicação
 st.title("🔎 Ferramenta de Detecção de Plágio")
 st.markdown("Envie um arquivo `.txt` e escolha um modelo para analisar se ele é plágio de algum texto da nossa base de dados.")
 
@@ -49,24 +51,18 @@ CSV_PATH = DATASET_PATH / 'file_information.csv'
 FILES_PATH = DATASET_PATH / 'data'
 MODEL_PATH = PROJECT_ROOT / 'models' / 'plagiarism_classifier.joblib'
 
-verificar_e_baixar_nltk()
-
-# Carrega os dados e o modelo usando as funções com cache
+# Carrega os dados e o modelo
 base_dados_originais = carregar_base_originais(CSV_PATH, FILES_PATH)
 modelo_ml = carregar_modelo_ml(MODEL_PATH)
 
-# Seletor para escolher o modelo de análise
+# Seletor de modelo e upload de arquivo
 modelo_escolhido = st.selectbox(
     "Escolha o modelo de análise:",
     ("Modelo 1: Similaridade Direta (TF-IDF)", "Modelo 2: Classificador com Machine Learning")
 )
-
-# Widget para upload de arquivo
 uploaded_file = st.file_uploader("Envie seu arquivo de texto (.txt)", type=["txt"])
 
-# Botão de análise e lógica principal
 if uploaded_file is not None:
-    # Lê o conteúdo do arquivo enviado
     texto_suspeito = uploaded_file.getvalue().decode("utf-8", errors="ignore")
     
     with st.expander("Ver texto enviado"):
@@ -74,44 +70,34 @@ if uploaded_file is not None:
 
     if st.button("Analisar Texto"):
         if not base_dados_originais:
-            st.error("A base de dados de originais não pôde ser carregada. Verifique os caminhos no código.")
+            st.error("A base de dados de originais não pôde ser carregada.")
         else:
-            with st.spinner("Analisando... Isso pode levar um momento."):
-                plagio_encontrado = False
+            with st.spinner("Analisando..."):
+                resultado = None
+                if "Modelo 1" in modelo_escolhido:
+                    resultado = analisar_com_tfidf(texto_suspeito, base_dados_originais, limiar=0.75)
+                elif "Modelo 2" in modelo_escolhido:
+                    resultado = analisar_com_ml(texto_suspeito, base_dados_originais, modelo_ml)
                 
-                # Itera sobre a base de dados
-                for nome_original, texto_original in base_dados_originais.items():
-                    similaridade = calcular_similaridade_tfidf(texto_suspeito, texto_original)
+                # Bloco único para exibir os resultados
+                if resultado and not resultado.get("erro"):
+                    st.markdown("---") # Linha divisória
                     
-                    # Lógica para o MODELO 1
-                    if "Modelo 1" in modelo_escolhido:
-                        # Usamos um limiar simples para o modelo 1
-                        if similaridade > 0.85: # Limiar de 85%
-                            plagio_encontrado = True
-                            st.success("PLÁGIO DETECTADO!")
-                            st.write(f"O texto parece ser plágio do arquivo de origem: **{nome_original}**")
-                            st.write(f"Similaridade TF-IDF calculada: **{similaridade:.2%}**")
-                            break
+                    # Exibe o veredito
+                    if resultado.get("plagio_detectado"):
+                        st.success("PLÁGIO DETECTADO!")
+                    else:
+                        st.info("Nenhuma correspondência de plágio encontrada.")
+
+                    st.markdown("---")
                     
-                    # Lógica para o MODELO 2
-                    elif "Modelo 2" in modelo_escolhido:
-                        if not modelo_ml:
-                            st.error("Modelo de Machine Learning não carregado.")
-                            break
-                        
-                        dados_para_previsao = pd.DataFrame({'similaridade_tfidf': [similaridade]})
-                        predicao = modelo_ml.predict(dados_para_previsao)[0]
-                        
-                        if predicao == 1:
-                            plagio_encontrado = True
-                            probabilidades = modelo_ml.predict_proba(dados_para_previsao)
-                            confianca = probabilidades[0][1] # Confiança na classe "plágio"
-                            st.success("PLÁGIO DETECTADO!")
-                            st.write(f"O modelo de Machine Learning classificou este texto como plágio.")
-                            st.write(f"Fonte mais provável: **{nome_original}**")
-                            st.write(f"Similaridade TF-IDF com a fonte: **{similaridade:.2%}**")
-                            st.write(f"Confiança da predição: **{confianca:.2%}**")
-                            break
-                
-                if not plagio_encontrado:
-                    st.info("Nenhuma correspondência de plágio encontrada na base de dados.")
+                    # Exibe os detalhes da melhor correspondência, independentemente do veredito
+                    st.write(f"**Fonte mais próxima na base de dados:** `{resultado.get('fonte_provavel')}`")
+                    st.write(f"**Similaridade TF-IDF com esta fonte:** `{resultado.get('similaridade'):.2%}`")
+                    
+                    # Se o Modelo 2 foi usado, exibe também a confiança
+                    if 'confianca' in resultado and resultado.get('confianca') > 0:
+                        st.write(f"**Confiança da predição (Modelo ML):** `{resultado.get('confianca'):.2%}`")
+
+                elif resultado and resultado.get("erro"):
+                    st.error(resultado.get("erro"))

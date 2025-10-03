@@ -1,0 +1,71 @@
+I pile on the candy
+It's such a pretty sight
+It makes the food taste dandy
+But my tummy hurts all night
+I'll put in some ingredients
+But keep the rest for me
+I'm not just disobedient
+I'm careful, can't you see?
+It's a piece of cake to bake a pretty cake
+If the way is hazy
+You gotta do the cooking by the book
+You know you can't be lazy!
+Never use a messy recipe
+The cake will end up crazy
+If you do the cooking by the book
+Then you'll have a cake
+We gotta have it made
+You know that I love cake
+Finally, it's time to make a cake
+Making food is just like science (Bake a cake)
+With tools that blend and baste (Bake a cake)
+And every fun appliance
+Gives the food a different taste
+It's a piece of cake to bake a pretty cake
+If the way is hazy
+You gotta do the cooking by the book
+You know you can't be lazy!
+Never use a messy recipe
+The cake will end up crazy
+If you do the cooking by the book
+Then you'll have a cake
+We gotta have it made
+You know that I love cake
+Finally, it's time to make a cake
+We gotta have it made
+You know that I love cake
+Finally, it's time to make a–
+You gotta do the cooking by the book
+Cake
+Well, Seymour, I made it- despite your directions. Ah. Superintendent Chalmers. Welcome.
+
+I hope you're prepared for an unforgettable luncheon.
+
+Yeah. Oh, egads! My roast is ruined. But what if I were to purchase fast food and disguise it as my own cooking? Delightfully devilish, Seymour. Ah- Skinner with his crazy explanations The superintendent's gonna need his medication When he hears Skinner's lame exaggerations There'll be trouble in town tonight Seymour! Superintendent, I was just- uh, just stretching my calves on the windowsill. Isometric exercise. Care to join me? Why is there smoke coming out of your oven, Seymour? Uh- Oh. That isn't smoke. It's steam. Steam from the steamed clams we're having. Mmm. Steamed clams. Whew. Superintendent, I hope you're ready for mouthwatering hamburgers. I thought we were having steamed clams. D'oh, no. I said steamed hams. That's what I call hamburgers. You call hamburgers steamed hams? Yes. It's a regional dialect.
+
+Uh-huh. Uh, what region? - Uh, upstate New York. Really. Well, I'm from Utica, and I've never heard anyone use the phrase "steamed hams. " Oh, not in Utica. No. It's an Albany expression. I see. You know, these hamburgers are quite similar to the ones they have at Krusty Burger. Oh, no. Patented Skinner burgers. Old family recipe.
+
+For steamed hams.
+
+Yes. Yes. And you call them steamed hams despite the fact that they are obviously grilled. Ye- You know, the- One thing I should- - Excuse me for one second.
+
+Of course. Well, that was wonderful. A good time was had by all. I'm pooped. Yes. I should be- Good Lord! What is happening in there? - Aurora borealis.
+
+ Uh- Aurora borealis at this time of year at this time of day in this part of the country localized entirely within your kitchen? - Yes.
+
+ May I see it? No. Seymour. ! The house is on fire. ! No, Mother. It's just the northern lights. Well, Seymour, you are an odd fellow but I must say you steam a good ham.
+In object-oriented programming, inheritance is a way to form new classes (instances of which are called objects) using classes that have already been defined. The inheritance concept was invented in 1967 for Simula.
+
+The new classes, known as derived classes, take over (or inherit) attributes and behavior of the pre-existing classes, which are referred to as base classes (or ancestor classes). It is intended to help reuse existing code with little or no modification.
+
+Inheritance provides the support for representation by categorization in computer languages. Categorization is a powerful mechanism number of information processing, crucial to human learning by means of generalization (what is known about specific entities is applied to a wider group given a belongs relation can be established) and cognitive economy (less information needs to be stored about each specific entity, only its particularities).
+
+The Industrial Revolution and its consequences have been a disaster for the human race. They have greatly increased the life-expectancy of those of us who live in “advanced” countries, but they have destabilized society, have made life unfulfilling, have subjected human beings to indignities, have led to widespread psychological suffering (in the Third World to physical suffering as well) and have inflicted severe damage on the natural world. The continued development of technology will worsen the situation. It will certainly subject human being to greater indignities and inflict greater damage on the natural world, it will probably lead to greater social disruption and psychological suffering, and it may lead to increased physical suffering even in “advanced” countries.
+Inheritance is also sometimes called generalization, because the is-a relationships represent a hierarchy between classes of objects. For instance, a "fruit" is a generalization of "apple", "orange", "mango" and many others. One can consider fruit to be an abstraction of apple, orange, etc. Conversely, since apples are fruit (i.e., an apple is-a fruit), apples may naturally inherit all the properties common to all fruit, such as being a fleshy container for the seed of a plant.
+
+An advantage of inheritance is that modules with sufficiently similar interfaces can share a lot of code, reducing the complexity of the program. Inheritance therefore has another view, a dual, called polymorphism, which describes many pieces of code being controlled by shared control code.
+Inheritance is typically accomplished either by overriding (replacing) one or more methods exposed by ancestor, or by adding new methods to those exposed by an ancestor.
+
+Complex inheritance, or inheritance used within a design that is not sufficiently mature, may lead to the Yo-yo problem.
+
+To be fair, you have to have a very high IQ to understand Rick and Morty. The humor is extremely subtle, and without a solid grasp of theoretical physics most of the jokes will go over a typical viewer's head. There's also Rick's nihilistic outlook, which is deftly woven into his characterisation - his personal philosophy draws heavily from Narodnaya Volya literature, for instance. The fans understand this stuff; they have the intellectual capacity to truly appreciate the depths of these jokes, to realize that they're not just funny- they say something deep about LIFE. As a consequence people who dislike Rick and Morty truly ARE idiots- of course they wouldn't appreciate, for instance, the humour in Rick's existencial catchphrase "Wubba Lubba Dub Dub," which itself is a cryptic reference to Turgenev's Russian epic Fathers and Sons I'm smirking right now just imagining one of those addlepated simpletons scratching their heads in confusion as Dan Harmon's genius unfolds itself on their television screens. What fools... how I pity them. And yes by the way, I DO have a Rick and Morty tattoo. And no, you cannot see it. It's for the ladies' eyes only- And even they have to demonstrate that they're within 5 IQ points of my own (preferably lower) beforehand.
