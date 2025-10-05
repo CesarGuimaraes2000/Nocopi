@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # --- 1. Carregar os modelos --- (não muda)
     print("Carregando modelos para avaliação...")
     model_v2 = joblib.load(PROJECT_ROOT / 'models' / 'plagiarism_classifier.joblib')
-    model_v3_path = str(PROJECT_ROOT / 'models' / 'samv3-all-mpnet-base-v2-parasci-BatchSize_64-Epochs_4-Warmup_0.1')
+    model_v3_path = str(PROJECT_ROOT / 'models' / 'samv3-sts-b-v2-BatchSize_16-Epochs_1-Warmup_0.1')
     model_v3 = SentenceTransformer(model_v3_path)
 
     # --- 2. Carregar e preparar os dados de teste --- (não muda)

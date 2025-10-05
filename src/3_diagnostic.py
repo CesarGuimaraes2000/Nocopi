@@ -26,7 +26,7 @@ if __name__ == "__main__":
     
     # --- Carregar o modelo SAMV3 ---
     print("Carregando modelo SAMV3...")
-    model_v3_path = str(PROJECT_ROOT / 'models' / 'samv3-all-mpnet-base-v2-parasci-BatchSize_16-Epochs_1-Warmup_0.1') # Use o nome da pasta do seu último treino
+    model_v3_path = str(PROJECT_ROOT / 'models' / 'samv3-sts-b-v2-BatchSize_16-Epochs_1-Warmup_0.1') # Use o nome da pasta do seu último treino
     model_v3 = SentenceTransformer(model_v3_path)
 
     # --- Carregar dados de teste ---

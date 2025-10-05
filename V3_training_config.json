@@ -1,7 +1,8 @@
 {
     "model_name": "sentence-transformers/all-mpnet-base-v2",
-    "batch_size": 16,
-    "epochs": 1,
+    "batch_size": 48,
+    "epochs": 5,
+    "learning_rate": 2e-5,
     "warmup_percentage": 0.1,
-    "output_model_name": "samv3-sts-b-v2-BatchSize_16-Epochs_1-Warmup_0.1"
+    "output_model_name": "samv3-parasci-finetuned-BatchSize_48-Epochs_5-Warmup_0.1-learning_rate_2e-5"
 }
