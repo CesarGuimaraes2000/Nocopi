@@ -1,5 +1,7 @@
 # Detector de Plágio com Inteligência Artificial
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CesarGuimaraes2000/Nocopi)
+
 Este projeto foi desenvolvido como parte da disciplina de Inteligência Artificial. O objetivo é implementar duas abordagens distintas para a detecção de plágio em textos, utilizando um dataset público para treinar e validar os modelos.
 
 O projeto culmina em uma aplicação web interativa construída com Streamlit, que permite ao usuário testar ambos os modelos.
