@@ -3,5 +3,5 @@
     "batch_size": 16,
     "epochs": 1,
     "warmup_percentage": 0.1,
-    "output_model_name": "samv3-all-mpnet-base-v2-parasci-BatchSize_16-Epochs_2-Warmup_0.1"
+    "output_model_name": "samv3-sts-b-v2-BatchSize_16-Epochs_1-Warmup_0.1"
 }

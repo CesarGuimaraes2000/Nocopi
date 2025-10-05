@@ -1,72 +1,70 @@
-# src/4_train_siamese_model.py
-
 import logging
 import json
 from sentence_transformers import SentenceTransformer, losses
 from torch.utils.data import DataLoader
 from pathlib import Path
-# Importamos nossa função de carregamento de dados já ajustada
-from data_loader import carregar_dados_parasci
+from data_loader import carregar_dados_sts
 
 # Configura o logging
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S',
                     level=logging.INFO)
 
-def iniciar_treinamento(config):
+def iniciar_treinamento_sts(config):
     """
-    Função principal que orquestra o processo de fine-tuning.
+    Função que orquestra o fine-tuning com o dataset STS-B e a CosineSimilarityLoss.
     """
     logging.info(f"Carregando modelo base: {config['model_name']}")
     model = SentenceTransformer(config['model_name'])
 
-    logging.info("Carregando dados de treinamento do ParaSCI...")
-    PROJECT_ROOT = Path(__file__).resolve().parent.parent
-    PARASCI_BASE_PATH = PROJECT_ROOT / 'Datasets' / 'ParaSCI' / 'Data'
-    train_samples = carregar_dados_parasci(PARASCI_BASE_PATH)
-
+    logging.info("Carregando dados de treinamento do STS-B...")
+    # A biblioteca baixa o arquivo 'stsbenchmark.tsv.gz' automaticamente se não o encontrar
+    train_samples = carregar_dados_sts()
+    
     if not train_samples:
-        logging.error("Nenhum dado de treinamento encontrado. Encerrando.")
-        return
+        # Tenta uma segunda vez caso o download automático seja necessário
+        from sentence_transformers import util
+        sts_dataset_path = 'stsbenchmark.tsv.gz'
+        util.http_get('https://sbert.net/datasets/stsbenchmark.tsv.gz', sts_dataset_path)
+        train_samples = carregar_dados_sts()
+        if not train_samples:
+            logging.error("Nenhum dado de treinamento do STS-B encontrado. Encerrando.")
+            return
 
-    # Configura o DataLoader padrão do PyTorch, que funciona bem com a OnlineContrastiveLoss
+    # Configura o DataLoader para o treinamento
     train_dataloader = DataLoader(train_samples, shuffle=True, batch_size=config['batch_size'])
 
-    # Usa a OnlineContrastiveLoss, que funciona com os pares de paráfrases que carregamos
-    train_loss = losses.OnlineContrastiveLoss(model=model)
+    # Define a função de perda recomendada para dados com score graduado
+    train_loss = losses.CosineSimilarityLoss(model=model)
 
-    # O resto da configuração continua o mesmo
-    warmup_steps = int(len(train_dataloader) * config['epochs'] * config['warmup_percentage'])
-    output_path = str(PROJECT_ROOT / 'models' / config['output_model_name'])
+    # O resto da configuração
+    warmup_steps = int(len(train_dataloader) * config['epochs'] * 0.1) # Usa 10% de warmup
+    output_path = str(Path(__file__).resolve().parent.parent / 'models' / config['output_model_name'])
     
-    logging.info("\n--- Iniciando o Fine-tuning ---")
-    logging.info(f"Dataset: ParaSCI-ACL ({len(train_samples)} exemplos)")
-    logging.info(f"Função de Perda: OnlineContrastiveLoss")
-    logging.info(f"Batch Size: {config['batch_size']}")
-    logging.info(f"Épocas: {config['epochs']}")
-    logging.info(f"Destino: {output_path}")
+    logging.info("\n--- Iniciando o Fine-tuning com STS-B ---")
+    logging.info(f"Dataset: STS-B ({len(train_samples)} exemplos)")
+    logging.info(f"Função de Perda: CosineSimilarityLoss")
 
+    # Inicia o treinamento
     model.fit(train_objectives=[(train_dataloader, train_loss)],
               epochs=config['epochs'],
               warmup_steps=warmup_steps,
               output_path=output_path,
-              show_progress_bar=True)
+              show_progress_bar=True,
+              # Adiciona avaliação durante o treino para monitorar o progresso
+              evaluation_steps=int(len(train_dataloader) * 0.1),
+              output_path_save_best_model=True)
 
-    logging.info(f"\n--- Treinamento Concluído com Sucesso! ---")
-    logging.info(f"Modelo SAMV3 salvo em: {output_path}")
+    logging.info(f"\n--- Treinamento Concluído! ---")
+    logging.info(f"Modelo SAMV3 (versão STS-B) salvo em: {output_path}")
 
-# Ponto de entrada que lê o JSON e chama a função de treino
+
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
-    # Ajuste o nome do arquivo de configuração se você o nomeou de forma diferente
-    CONFIG_FILE_PATH = PROJECT_ROOT / 'V3_training_config.json' 
+    CONFIG_FILE_PATH = PROJECT_ROOT / 'config.json'
 
     print(f"Carregando configurações de '{CONFIG_FILE_PATH}'...")
-    try:
-        with open(CONFIG_FILE_PATH, 'r') as f:
-            training_config = json.load(f)
-    except FileNotFoundError:
-        print(f"ERRO: Arquivo de configuração '{CONFIG_FILE_PATH}' não encontrado.")
-        exit()
+    with open(CONFIG_FILE_PATH, 'r') as f:
+        training_config = json.load(f)
 
-    iniciar_treinamento(training_config)
+    iniciar_treinamento_sts(training_config)
