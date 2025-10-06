@@ -1,0 +1,1 @@
+we run mecab on hadoop 11 , an open source software that implemented the map-reduce framework , for word segmenting and pos tagging the data .

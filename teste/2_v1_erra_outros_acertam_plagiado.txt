@@ -1,0 +1,1 @@
+we run mecab 4 with ipa dictionary 5 on hadoop 6 , an open source software that implemented the map-reduce framework , for parallel word segmenting , part-of-speech tagging , and kana pronunciation annotating .

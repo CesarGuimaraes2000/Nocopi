@@ -5,13 +5,12 @@ import joblib
 from sentence_transformers import SentenceTransformer, util
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import numpy as np
-from tqdm import tqdm # <-- 1. Importa a biblioteca
+from tqdm import tqdm
 
 # Importa as funções que precisamos
 from utils import calcular_similaridade_tfidf
 
 def carregar_dados_teste_parasci(parasci_base_path):
-    # (Esta função não muda)
     test_folder_path = parasci_base_path / 'ParaSCI-ACL' / 'test'
     src_file_path = test_folder_path / 'test.src'
     tgt_file_path = test_folder_path / 'test.tgt'
@@ -30,7 +29,7 @@ if __name__ == "__main__":
     # --- 1. Carregar os modelos --- (não muda)
     print("Carregando modelos para avaliação...")
     model_v2 = joblib.load(PROJECT_ROOT / 'models' / 'plagiarism_classifier.joblib')
-    model_v3_path = str(PROJECT_ROOT / 'models' / 'samv3-sts-b-v2-BatchSize_16-Epochs_1-Warmup_0.1')
+    model_v3_path = str(PROJECT_ROOT / 'models' / 'samv3-parasci-finetuned-BatchSize_48-Epochs_5-Warmup_0.1-learning_rate_2e-5')
     model_v3 = SentenceTransformer(model_v3_path)
 
     # --- 2. Carregar e preparar os dados de teste --- (não muda)

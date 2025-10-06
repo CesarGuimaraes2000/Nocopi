@@ -1,0 +1,1 @@
+previous works showed that conditional random fields can outperform other sequence labeling models like memms in abbreviation generation tasks .

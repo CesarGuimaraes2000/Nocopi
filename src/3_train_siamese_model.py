@@ -3,7 +3,7 @@ import json
 from sentence_transformers import SentenceTransformer, losses
 from torch.utils.data import DataLoader
 from pathlib import Path
-from data_loader import carregar_dados_parasci_contrastive # Importa nossa nova função
+from data_loader import carregar_dados_parasci_contrastive
 
 # Configura o logging
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -54,7 +54,7 @@ def iniciar_treinamento_parasci(config):
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
-    CONFIG_FILE_PATH = PROJECT_ROOT / 'V3_training_config.json' # Usa o novo arquivo de config
+    CONFIG_FILE_PATH = PROJECT_ROOT / 'V3_training_config.json'
 
     print(f"Carregando configurações de '{CONFIG_FILE_PATH}'...")
     with open(CONFIG_FILE_PATH, 'r') as f:

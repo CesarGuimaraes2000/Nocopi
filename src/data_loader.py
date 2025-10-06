@@ -18,10 +18,8 @@ def carregar_dados_sts(sts_dataset_path='stsbenchmark.tsv.gz'):
     with gzip.open(sts_dataset_path, 'rt', encoding='utf-8') as f:
         for line in f:
             parts = line.strip().split('\t')
-            
-            # CORREÇÃO AQUI: Mudamos de 'sts-train' para 'train'
             if len(parts) >= 7 and parts[0] == 'train':
-                score = float(parts[4]) / 5.0  # Normaliza o score de 0-5 para 0-1
+                score = float(parts[4]) / 5.0  
                 sent1 = parts[5]
                 sent2 = parts[6]
                 train_samples.append(InputExample(texts=[sent1, sent2], label=score))

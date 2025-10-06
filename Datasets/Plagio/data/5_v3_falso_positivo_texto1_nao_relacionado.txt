@@ -1,0 +1,1 @@
+to minimize such confusion , a system must separately represent noun phrases , the underlying concepts to which they can refer , and the many-to-many ¡°can refer to¡± relation between them .

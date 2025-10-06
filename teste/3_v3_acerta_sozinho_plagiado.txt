@@ -1,0 +1,1 @@
+in our approach is to formulate summarization as a phrase rather than sentence .

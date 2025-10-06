@@ -3,16 +3,18 @@ import joblib
 import os
 import pandas as pd
 from pathlib import Path
+from sentence_transformers import SentenceTransformer 
 
-# Importando nossas novas funções de análise e as utilidades
+# Importando nossas funções de análise e as utilidades
 from utils import verificar_e_baixar_nltk
 from SAMV1 import analisar_com_tfidf
 from SAMV2 import analisar_com_ml
+from SAMV3 import analisar_com_samv3 
 
 # Chama a função de verificação no início da execução do app
 verificar_e_baixar_nltk()
 
-# --- Funções de Carregamento com Cache (continuam aqui) ---
+# --- Funções de Carregamento com Cache ---
 @st.cache_data
 def carregar_base_originais(csv_path, files_path):
     """Carrega todos os textos originais da base de dados e os armazena em cache."""
@@ -32,14 +34,28 @@ def carregar_base_originais(csv_path, files_path):
 
 @st.cache_resource
 def carregar_modelo_ml(model_path):
-    """Carrega o modelo de Machine Learning e o armazena em cache."""
+    """Carrega o modelo de Machine Learning (SAMV2)."""
     try:
         return joblib.load(model_path)
     except FileNotFoundError:
-        st.error(f"ERRO: Modelo '{model_path}' não encontrado. Execute o script '2_train_classifier.py' primeiro.")
+        st.error(f"ERRO: Modelo SAMV2 '{model_path}' não encontrado. Execute o '2_train_classifier.py'.")
         return None
 
-# --- Interface Gráfica do Streamlit (agora muito mais limpa) ---
+@st.cache_resource
+def carregar_modelo_samv3(model_path):
+    """Carrega o modelo Sentence Transformer (SAMV3)."""
+    if not os.path.exists(model_path):
+        st.error(f"ERRO: Modelo SAMV3 não encontrado em '{model_path}'. Execute o script de treinamento do SAMV3.")
+        return None
+    try:
+        return SentenceTransformer(model_path)
+    except Exception as e:
+        st.error(f"ERRO ao carregar modelo SAMV3: {e}")
+        return None
+# -----------------------------------------
+
+
+# --- Interface Gráfica do Streamlit ---
 
 st.title("🔎 Ferramenta de Detecção de Plágio")
 st.markdown("Envie um arquivo `.txt` e escolha um modelo para analisar se ele é plágio de algum texto da nossa base de dados.")
@@ -49,16 +65,23 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_PATH = PROJECT_ROOT / 'Datasets/Plagio'
 CSV_PATH = DATASET_PATH / 'file_information.csv'
 FILES_PATH = DATASET_PATH / 'data'
-MODEL_PATH = PROJECT_ROOT / 'models' / 'plagiarism_classifier.joblib'
+MODEL_V2_PATH = PROJECT_ROOT / 'models' / 'plagiarism_classifier.joblib'
+MODEL_V3_PATH = PROJECT_ROOT / 'models' / 'samv3-parasci-finetuned-BatchSize_48-Epochs_5-Warmup_0.1-learning_rate_2e-5' 
 
-# Carrega os dados e o modelo
+# Carrega todos os recursos necessários
 base_dados_originais = carregar_base_originais(CSV_PATH, FILES_PATH)
-modelo_ml = carregar_modelo_ml(MODEL_PATH)
+modelo_v2 = carregar_modelo_ml(MODEL_V2_PATH)
+modelo_v3 = carregar_modelo_samv3(str(MODEL_V3_PATH))
+
 
 # Seletor de modelo e upload de arquivo
 modelo_escolhido = st.selectbox(
     "Escolha o modelo de análise:",
-    ("Modelo 1: Similaridade Direta (TF-IDF)", "Modelo 2: Classificador com Machine Learning")
+    (
+        "Modelo 1: Similaridade Direta (SAMV1)",
+        "Modelo 2: Classificador com Machine Learning (SAMV2)",
+        "Modelo 3: Semântico (SAMV3)",
+    )
 )
 uploaded_file = st.file_uploader("Envie seu arquivo de texto (.txt)", type=["txt"])
 
@@ -75,27 +98,32 @@ if uploaded_file is not None:
             with st.spinner("Analisando..."):
                 resultado = None
                 if "Modelo 1" in modelo_escolhido:
-                    resultado = analisar_com_tfidf(texto_suspeito, base_dados_originais, limiar=0.75)
+                    resultado = analisar_com_tfidf(texto_suspeito, base_dados_originais, limiar=0.85)
                 elif "Modelo 2" in modelo_escolhido:
-                    resultado = analisar_com_ml(texto_suspeito, base_dados_originais, modelo_ml)
-                
+                    resultado = analisar_com_ml(texto_suspeito, base_dados_originais, modelo_v2)
+                # --- NOVA LÓGICA PARA O MODELO 3 ---
+                elif "Modelo 3" in modelo_escolhido:
+                    resultado = analisar_com_samv3(texto_suspeito, base_dados_originais, modelo_v3, top_k=10, limiar_final=0.80)
+
                 # Bloco único para exibir os resultados
                 if resultado and not resultado.get("erro"):
-                    st.markdown("---") # Linha divisória
+                    st.markdown("---")
                     
-                    # Exibe o veredito
                     if resultado.get("plagio_detectado"):
                         st.success("PLÁGIO DETECTADO!")
                     else:
                         st.info("Nenhuma correspondência de plágio encontrada.")
 
                     st.markdown("---")
-                    
-                    # Exibe os detalhes da melhor correspondência, independentemente do veredito
                     st.write(f"**Fonte mais próxima na base de dados:** `{resultado.get('fonte_provavel')}`")
-                    st.write(f"**Similaridade TF-IDF com esta fonte:** `{resultado.get('similaridade'):.2%}`")
                     
-                    # Se o Modelo 2 foi usado, exibe também a confiança
+                    # Exibe os scores de similaridade relevantes
+                    if 'similaridade_semantica' in resultado:
+                        st.write(f"**Similaridade Semântica (SAMV3):** `{resultado.get('similaridade_semantica'):.2%}`")
+                        st.write(f"**Similaridade Lexical (TF-IDF) com esta fonte:** `{resultado.get('similaridade_tfidf'):.2%}`")
+                    elif 'similaridade' in resultado:
+                        st.write(f"**Similaridade TF-IDF com esta fonte:** `{resultado.get('similaridade'):.2%}`")
+                    
                     if 'confianca' in resultado and resultado.get('confianca') > 0:
                         st.write(f"**Confiança da predição (Modelo ML):** `{resultado.get('confianca'):.2%}`")
 

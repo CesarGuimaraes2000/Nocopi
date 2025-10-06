@@ -1,4 +1,3 @@
-# Dentro de src/SAMV1.py
 from utils import calcular_similaridade_tfidf
 
 def analisar_com_tfidf(texto_suspeito, base_dados_originais, limiar=0.85):

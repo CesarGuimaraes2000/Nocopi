@@ -15,7 +15,7 @@ def verificar_e_baixar_nltk():
         nltk.download('stopwords')
         nltk.download('punkt')
         st.success("Pacotes do NLTK baixados com sucesso!")
-        st.rerun() # Adicionado para recarregar o app após o download
+        st.rerun() 
 
 def preprocessar_texto(texto):
     """Limpa e prepara o texto para análise."""
