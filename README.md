@@ -27,7 +27,7 @@ Este método é excelente para detectar cópias diretas ("copia e cola"), mas fa
 ### Abordagem 2: Classificador com Machine Learning
 
 Esta abordagem trata a detecção de plágio como um problema de **classificação binária** ("é plágio" ou "não é plágio").
-1.  **Engenharia de Features:** O script `src/2_generate_features.py` calcula a **similaridade TF-IDF** para milhares de pares de textos, usando-a como uma "feature" numérica.
+1.  **Engenharia de Features:** O script `src/2_generate_features.py` calcula a **similaridade TF-IDF** para os pares de textos, usando-a como uma "feature" numérica.
 2.  **Treinamento:** Um modelo de **Regressão Logística** é treinado (`src/2_train_classifier.py`) com essas features para aprender um limiar de decisão otimizado.
 3.  **Predição:** O modelo treinado classifica novos pares de textos, oferecendo uma decisão mais robusta que um limiar fixo.
 
@@ -92,7 +92,7 @@ Se desejar executar o pipeline de treinamento do zero ou experimentar com difere
     -   Execute `python src/2_train_classifier.py` para treinar o modelo de Regressão Logística.
 
 2.  **Para o Modelo 3 (SAMV3):**
-    -   **Configure o Treinamento:** Abra o arquivo `config.json` (para treinar com STS-B) ou `config_parasci.json` (para treinar com ParaSCI). Neste arquivo, você pode ajustar os hiperparâmetros do treinamento:
+    -   **Configure o Treinamento:** Abra o arquivo `V3_training_config.json`. Neste arquivo, você pode ajustar os hiperparâmetros do treinamento:
         -   `"model_name"`: O modelo base do Hugging Face.
         -   `"batch_size"`: Quantos exemplos processar de uma vez (afeta o uso de memória).
         -   `"epochs"`: Quantas vezes o modelo verá o dataset inteiro.
